@@ -20,9 +20,12 @@ export const register = async (req, res, next) => {
     gender,
     age,
   });
-  return res
-    .status(201)
-    .json({ success: true, message: "user created successfully", user });
+  return res.status(201).json({
+    Key: true,
+    success: true,
+    message: "user created successfully",
+    data: user,
+  });
 };
 
 export const login = async (req, res, next) => {
