@@ -21,9 +21,9 @@ export const register = async (req, res, next) => {
     age,
   });
   return res.status(201).json({
-    Key: true,
-    success: true,
-    message: "user created successfully",
+    key: true,
+    code: 201,
+    message: "User created successfully",
     data: user,
   });
 };
@@ -52,7 +52,13 @@ export const login = async (req, res, next) => {
     await user.save();
   }
 
-  return res
-    .status(200)
-    .json({ success: true, message: "login successfully", token });
+  return res.status(200).json({
+    key: true,
+    code: 200,
+    message: "login successfully",
+    data: {
+      token: token,
+      user: user,
+    },
+  });
 };
