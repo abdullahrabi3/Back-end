@@ -19,7 +19,4 @@ export const generalFields = {
   userName: Joi.string().min(3).max(20),
   email: Joi.string().email(),
   password: Joi.string(),
-  confirmPassword: Joi.string().valid(Joi.ref("password")),
-  phone: Joi.string(),
-  role: Joi.string().valid(...Object.values(rolesTypes)),
 };

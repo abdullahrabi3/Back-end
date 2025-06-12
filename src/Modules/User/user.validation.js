@@ -1,14 +1,12 @@
-import { generalFields } from "../../middlewares/validation.middlware.js";
 import Joi from "joi";
 
 export const editprofileSchema = Joi.object({
-  userName: generalFields.userName,
-  email: generalFields.email,
-  phone: generalFields.phone,
+  userName: Joi.string().min(3).max(20),
+  email: Joi.string().email(),
 }).required();
 
 export const changepassword = Joi.object({
-  oldPassword: generalFields.password.required(),
-  newPassword: generalFields.password.not(Joi.ref("oldPassword")).required(),
-  confirmNewPassword: generalFields.confirmPassword.required(),
+  oldPassword: Joi.string().required(),
+  newPassword: Joi.string().not(Joi.ref("oldPassword")).required(),
+  confirmNewPassword: Joi.string().valid(Joi.ref("newPassword")).required(),
 }).required();

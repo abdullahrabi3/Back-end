@@ -1,16 +1,13 @@
 import Joi from "joi";
-import { rolesTypes } from "../../middlewares/auth.middleware.js";
-import { generalFields } from "../../middlewares/validation.middlware.js";
 
 export const registerSchema = Joi.object({
-  userName: generalFields.userName.required(),
-  email: generalFields.email.required(),
-  password: generalFields.password.required(),
-  confirmPassword: generalFields.confirmPassword.required(),
-  phone: generalFields.phone.required(),
-  role: generalFields.role.required().valid(...Object.values(rolesTypes)),
+  name: Joi.string().min(3).max(20).required(),
+  email: Joi.string().email().required(),
+  password: Joi.string().required(),
+  gender: Joi.string().valid('Male', 'Female').required(),
+  age: Joi.number().min(0).required(),
 });
 export const loginSchema = Joi.object({
-  email: generalFields.email.required(),
-  password: generalFields.password.required(),
+  email: Joi.string().email().required(),
+  password: Joi.string().required(),
 });

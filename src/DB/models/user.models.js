@@ -4,7 +4,7 @@ const { Schema } = mongoose;
 
 const userSchema = new Schema(
   {
-    userName: {
+    name: {
       type: String,
       required: [true, "username is required"],
       minlenght: [3, "username must be at least 3 characters long"],
@@ -32,8 +32,8 @@ const userSchema = new Schema(
     gender: {
       type: String,
       enum: {
-        values: ["male", "female"],
-        message: "Gender must be 'male' or'female'",
+        values: ["Male", "Female"],
+        message: "Gender must be 'Male' or'Female'",
       },
       //default: "male",
     },

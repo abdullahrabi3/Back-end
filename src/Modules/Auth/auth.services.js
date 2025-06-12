@@ -5,22 +5,20 @@ import jwt from "jsonwebtoken";
 import { rolesTypes } from "../../middlewares/auth.middleware.js";
 
 export const register = async (req, res, next) => {
-  const { email, password, phone } = req.body;
+  const { name, email, password, gender, age } = req.body;
 
   const checkUser = await Usermodel.findOne({ email });
   if (checkUser) {
     return res.status(409).json({ success: false, message: "user found" });
   }
   const hashedPassword = bcrypt.hashSync(password, 10);
-  const encryptedphone = CryptoJS.AES.encrypt(
-    phone,
-    process.env.ENCRIPTION_SECRIT
-  ).toString();
 
   const user = await Usermodel.create({
-    ...req.body,
+    name,
+    email,
     password: hashedPassword,
-    phone: encryptedphone,
+    gender,
+    age,
   });
   return res
     .status(201)
