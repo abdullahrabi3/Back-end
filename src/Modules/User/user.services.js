@@ -9,7 +9,9 @@ export const getptofile = asyncHandler(async (req, res, next) => {
     encrpted: user.phone,
     sign: process.env.ENCRIPTION_SECRIT,
   });
-  return res.status(200).json({ success: true, message: "user profile", user });
+  return res
+    .status(200)
+    .json({ key: true, code: 200, message: "user profile", date: user });
 });
 
 export const editprofile = asyncHandler(async (req, res, next) => {
@@ -26,7 +28,8 @@ export const editprofile = asyncHandler(async (req, res, next) => {
     { new: true, runValidators: true }
   );
   return req.status(200).json({
-    success: true,
+    key: true,
+    code: 200,
     message: "user updated",
     result: { user: editUser },
   });
