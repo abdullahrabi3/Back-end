@@ -17,7 +17,7 @@ router.patch(
 );
 
 // ✅ تعديل الاسم فقط
-router.patch(
+/*router.patch(
   "/name",
   authentication,
   allowTo(["User", "Admin"]),
@@ -38,6 +38,6 @@ router.patch(
   authentication,
   allowTo(["User", "Admin"]),
   userservices.updatePassword
-);
+);*/
 
 export default router;

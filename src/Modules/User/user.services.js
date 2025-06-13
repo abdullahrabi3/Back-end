@@ -1,8 +1,8 @@
-import { asyncHandler } from "../../middlewares/asyncHandler.js";
-import UserModel from "../../DB/models/user.models.js";
 import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
+import asyncHandler from "express-async-handler";
+import UserModel from "../../DB/models/user.models.js";
 
-// ✅ تعديل الملف الشخصي: name, email, password, newPassword
 export const editprofile = asyncHandler(async (req, res, next) => {
   const { name, email, password, newPassword } = req.body;
 
@@ -45,10 +45,20 @@ export const editprofile = asyncHandler(async (req, res, next) => {
     updates.password = bcrypt.hashSync(newPassword, 10);
   }
 
+  // تحديث البيانات في قاعدة البيانات
   const updatedUser = await UserModel.findByIdAndUpdate(req.user._id, updates, {
     new: true,
     runValidators: true,
   });
+
+  // إنشاء توكن جديد بعد التعديل
+  const token = jwt.sign(
+    { id: updatedUser._id },
+    process.env.TOKEN_SECRIT_USER,
+    {
+      expiresIn: "7d",
+    }
+  );
 
   return res.status(200).json({
     key: true,
@@ -57,12 +67,14 @@ export const editprofile = asyncHandler(async (req, res, next) => {
     data: {
       name: updatedUser.name,
       email: updatedUser.email,
+      newPassword: updatedUser.password,
+      token: token,
     },
   });
 });
 
 // ✅ تحديث الاسم فقط
-export const updateName = asyncHandler(async (req, res) => {
+/*export const updateName = asyncHandler(async (req, res) => {
   const { name } = req.body;
   if (!name) {
     return res.status(400).json({
@@ -140,4 +152,4 @@ export const updatePassword = asyncHandler(async (req, res) => {
     code: 200,
     message: "Password updated successfully",
   });
-});
+});*/
