@@ -1,43 +1,43 @@
 import { Router } from "express";
 import * as userservices from "./user.services.js";
 import * as uservalidation from "./user.validation.js";
+
 import { authentication, allowTo } from "../../middlewares/auth.middleware.js";
 import { validation } from "../../middlewares/validation.middlware.js";
 
 const router = Router();
 
-/*router.get(
-  "/profile",
-  authentication,
-  allowTo(["User", "Admin"]),
-  userservices.getptofile
-);*/
-
-//Edit profile
-
+// ✅ تعديل شامل للبروفايل (name, email, password, newPassword)
 router.patch(
-  "/",
-  authentication, // تأكد إنه يضيف req.user
+  "/editprofile",
+  authentication,
   allowTo(["User", "Admin"]),
   validation(uservalidation.editprofileSchema),
   userservices.editprofile
 );
 
-//change password
-
-/*router.patch(
-  "/changepassword",
+// ✅ تعديل الاسم فقط
+router.patch(
+  "/name",
   authentication,
   allowTo(["User", "Admin"]),
-  validation(uservalidation.changepassword),
-  userservices.changepassword
+  userservices.updateName
 );
 
-router.delete(
-  "/",
+// ✅ تعديل الإيميل فقط
+router.patch(
+  "/email",
   authentication,
   allowTo(["User", "Admin"]),
-  userservices.deleteUser
-);*/
+  userservices.updateEmail
+);
+
+// ✅ تعديل كلمة المرور فقط
+router.patch(
+  "/password",
+  authentication,
+  allowTo(["User", "Admin"]),
+  userservices.updatePassword
+);
 
 export default router;

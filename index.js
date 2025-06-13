@@ -2,16 +2,13 @@ import express from "express";
 import bootstrap from "./src/app.conroller.js";
 import dotenv from "dotenv";
 import path from "path";
+
 dotenv.config({ path: path.join("./src/config/.env") });
 
 const app = express();
-const port = process.env.PORT || 5000;
+bootstrap(app, express);
 
-await bootstrap(app, express);
-
-app.listen(
-  process.env.PORT || 5000,
-  () => console.log(`Example app listening on port ${process.env.PORT}!`),
-
-  console.log(port)
-);
+const port = process.env.PORT || 3000;
+app.listen(port, () => {
+  console.log(`Server is running on port ${port}`);
+});

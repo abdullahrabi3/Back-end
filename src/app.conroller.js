@@ -2,6 +2,7 @@ import connectDB from "./DB/conection.js";
 import authRouter from "./Modules/Auth/auth.controller.js";
 import massegeRouter from "./Modules/Masseges/massege.controller.js";
 import userRouter from "./Modules/User/user.controller.js";
+
 import cors from "cors";
 
 const bootstrap = async (app, express) => {
