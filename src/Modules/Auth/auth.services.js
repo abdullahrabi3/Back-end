@@ -9,7 +9,9 @@ export const register = async (req, res, next) => {
 
   const checkUser = await Usermodel.findOne({ email });
   if (checkUser) {
-    return res.status(409).json({ success: false, message: "user found" });
+    return res
+      .status(409)
+      .json({ key: false, code: 409, message: "user found" });
   }
   const hashedPassword = bcrypt.hashSync(password, 10);
 
@@ -20,11 +22,16 @@ export const register = async (req, res, next) => {
     gender,
     age,
   });
+  const token = jwt.sign(
+    { id: user._id },
+    process.env.TOKEN_SECRIT_USER, // تأكد إنها متعرفة في .env
+    { expiresIn: "7d" }
+  );
   return res.status(201).json({
     key: true,
     code: 201,
     message: "User created successfully",
-    data: user,
+    data: { token: token, user: user },
   });
 };
 
