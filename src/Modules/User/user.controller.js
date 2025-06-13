@@ -6,18 +6,18 @@ import { validation } from "../../middlewares/validation.middlware.js";
 
 const router = Router();
 
-router.get(
+/*router.get(
   "/profile",
   authentication,
   allowTo(["User", "Admin"]),
   userservices.getptofile
-);
+);*/
 
 //Edit profile
 
 router.patch(
   "/",
-  authentication,
+  authentication, // تأكد إنه يضيف req.user
   allowTo(["User", "Admin"]),
   validation(uservalidation.editprofileSchema),
   userservices.editprofile
@@ -25,7 +25,7 @@ router.patch(
 
 //change password
 
-router.patch(
+/*router.patch(
   "/changepassword",
   authentication,
   allowTo(["User", "Admin"]),
@@ -38,6 +38,6 @@ router.delete(
   authentication,
   allowTo(["User", "Admin"]),
   userservices.deleteUser
-);
+);*/
 
 export default router;

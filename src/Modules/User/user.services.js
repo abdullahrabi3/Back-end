@@ -2,10 +2,10 @@ import { asyncHandler } from "../../middlewares/asyncHandler.js";
 import UserModel from "../../DB/models/user.models.js";
 import { compare } from "../../utils/hashing/hash.js";
 
-export const getptofile = asyncHandler(async (req, res, next) => {
-  const { user } = req;
+/*export const getptofile = asyncHandler(async (req, res, next) => {
+  //const { user } = req;
 
-  user.phone = decrypt({
+//  user.phone = decrypt({
     encrpted: user.phone,
     sign: process.env.ENCRIPTION_SECRIT,
   });
@@ -74,5 +74,40 @@ export const deleteUser = asyncHandler(async (req, res, next) => {
     message: "user deleted successfully",
 
     result: { user },
+  });
+});*/
+
+export const editprofile = asyncHandler(async (req, res) => {
+  const { name, email, password, newPassword } = req.body;
+
+  const user = await UserModel.findById(req.user._id);
+  if (!user) {
+    return res.status(404).json({ success: false, message: "User not found" });
+  }
+
+  // لو فيه باسورد لازم نتحقق من القديم
+  if (password && newPassword) {
+    const isMatch = bcrypt.compareSync(password, user.password);
+    if (!isMatch) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Wrong password" });
+    }
+    user.password = bcrypt.hashSync(newPassword, 10);
+  }
+
+  // تحديث الاسم والايميل إن وجد
+  if (name) user.name = name;
+  if (email) user.email = email;
+
+  await user.save();
+
+  res.status(200).json({
+    success: true,
+    message: "Profile updated",
+    data: {
+      name: user.name,
+      email: user.email,
+    },
   });
 });
