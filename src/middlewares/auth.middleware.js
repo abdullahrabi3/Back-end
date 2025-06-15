@@ -1,37 +1,50 @@
 import jwt from "jsonwebtoken";
 import Usermodel from "../DB/models/user.models.js";
+import DoctorModel from "../DB/models/doctor.models.js"; // تأكد من المسار الصحيح
 
 export const rolesTypes = {
   User: "User",
   Admin: "Admin",
+  doctor: "doctor",
 };
 
-//authmiddleware
+// ✅ Authentication Middleware
 export const authentication = async (req, res, next) => {
   try {
     const { authorization } = req.headers;
 
     if (!authorization) {
-      return next(new Error("authorization header is rquire", { cause: 401 }));
+      return next(
+        new Error("authorization header is required", { cause: 401 })
+      );
     }
+
     const [Bearer, token] = authorization.split(" ");
-    let TOKEN_SIGNATURE = undefined;
+
+    let TOKEN_SIGNATURE;
+    let user = null;
+
     switch (Bearer) {
       case "Bearer":
         TOKEN_SIGNATURE = process.env.TOKEN_SECRIT_USER;
+        user = await getUserFromToken(token, TOKEN_SIGNATURE, Usermodel);
         break;
       case "Admin":
         TOKEN_SIGNATURE = process.env.TOKEN_SECRIT_ADMIN;
+        user = await getUserFromToken(token, TOKEN_SIGNATURE, Usermodel);
+        break;
+      case "Doctor":
+        TOKEN_SIGNATURE = process.env.TOKEN_SECRIT_DOCTOR;
+        user = await getUserFromToken(token, TOKEN_SIGNATURE, DoctorModel);
         break;
       default:
-        break;
+        return next(new Error("Invalid token type", { cause: 400 }));
     }
 
-    const { id } = jwt.verify(token, TOKEN_SIGNATURE);
-    const user = await Usermodel.findById(id);
     if (!user) {
-      return next(new Error("user not found", { cause: 404 }));
+      return next(new Error("User not found", { cause: 404 }));
     }
+
     req.user = user;
     next();
   } catch (error) {
@@ -39,16 +52,24 @@ export const authentication = async (req, res, next) => {
   }
 };
 
-//Authorization
-export const allowTo = (role = []) => {
-  return async (req, res, next) => {
+// ✅ Authorization Middleware
+export const allowTo = (roles = []) => {
+  return (req, res, next) => {
     try {
-      if (!role.includes(req.user.role))
-        return next(new Error("you are not allowed", { cause: 403 }));
+      if (!roles.includes(req.user.role)) {
+        return next(new Error("You are not allowed", { cause: 403 }));
+      }
       next();
     } catch (error) {
       return next(error);
     }
   };
 };
-export default { allowTo, authentication };
+
+// ✅ Helper to decode and find user
+const getUserFromToken = async (token, secret, model) => {
+  const decoded = jwt.verify(token, secret);
+  return await model.findById(decoded.id);
+};
+
+export default { authentication, allowTo };

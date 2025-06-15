@@ -1,22 +1,7 @@
 import Joi from "joi";
 import mongoose from "mongoose";
 
-export const validation = (schema) => {
-  return (req, res, next) => {
-    const { error } = schema.validate(req.body, { abortEarly: false });
-    if (error) {
-      return res.status(400).json({
-        key: false,
-        code: 400,
-        message: "Validation error",
-        errors: error.details.map((detail) => detail.message),
-      });
-    }
-    next();
-  };
-};
-
-// Register Validation
+// Register Schema
 export const registerSchema = Joi.object({
   name: Joi.string().min(3).max(20).required().messages({
     "string.empty": "Name is required",
@@ -59,7 +44,7 @@ export const registerSchema = Joi.object({
     }),
 });
 
-// Login Validation
+// Login Schema
 export const loginSchema = Joi.object({
   email: Joi.string().email().required().messages({
     "string.empty": "Email is required",
