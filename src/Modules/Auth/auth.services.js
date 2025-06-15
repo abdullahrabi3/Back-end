@@ -36,7 +36,7 @@ export const register = async (req, res, next) => {
 };
 
 export const login = async (req, res, next) => {
-  const { email } = req.body;
+  const { email, password } = req.body;
 
   const user = await Usermodel.findOne({ email });
   if (!user) return next(new Error("user not found", { cause: 404 }));
