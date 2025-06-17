@@ -19,7 +19,7 @@ const userSchema = new Schema(
       unique: true,
       lowercase: true,
       trim: true,
-      match: /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4]$/,
+      match: [/^\S+@\S+\.\S+$/, "Please use a valid email address"],
     },
 
     confirmEmail: {
@@ -35,7 +35,7 @@ const userSchema = new Schema(
     gender: {
       type: String,
       enum: {
-        values: ["Male", "Female"],
+        values: ["male", "female"],
         message: "Gender must be 'Male' or 'Female'",
       },
     },

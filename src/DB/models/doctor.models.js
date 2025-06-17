@@ -31,8 +31,7 @@ const doctorSchema = new mongoose.Schema(
     },
 
     field: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Field", // لازم يكون عندك موديل اسمه Field
+      type: Number,
       required: true,
     },
 

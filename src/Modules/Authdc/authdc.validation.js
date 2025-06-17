@@ -2,7 +2,7 @@ import Joi from "joi";
 import mongoose from "mongoose";
 
 // Register Schema
-export const registerSchema = Joi.object({
+export const registerDoctorSchema = Joi.object({
   name: Joi.string().min(3).max(20).required().messages({
     "string.empty": "Name is required",
     "string.min": "Name must be at least 3 characters",
@@ -30,22 +30,14 @@ export const registerSchema = Joi.object({
     "number.max": "Maximum age is 100",
   }),
 
-  field: Joi.string()
-    .custom((value, helpers) => {
-      if (!mongoose.Types.ObjectId.isValid(value)) {
-        return helpers.error("any.invalid");
-      }
-      return value;
-    })
-    .required()
-    .messages({
-      "string.empty": "Field is required",
-      "any.invalid": "Invalid field ID",
-    }),
+  field: Joi.number().required().messages({
+    "number.base": "Field must be a number",
+    "any.required": "Field is required",
+  }),
 });
 
 // Login Schema
-export const loginSchema = Joi.object({
+export const loginDoctorSchema = Joi.object({
   email: Joi.string().email().required(),
   password: Joi.string().required(),
 });
