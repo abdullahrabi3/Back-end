@@ -6,7 +6,7 @@ import path from "path";
 
 dotenv.config({ path: path.join("./body/src/config/.env") });
 
-dotenv.config({ path: path.join("./src/config/.env") });
+//dotenv.config({ path: path.join("./src/config/.env") });
 
 const app = express();
 bootstrap(app, express);
