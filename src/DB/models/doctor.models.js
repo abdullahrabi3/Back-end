@@ -25,19 +25,18 @@ const doctorSchema = new Schema(
     gender: {
       type: String,
       enum: {
-        values: ["Male", "Female"],
+        values: ["male", "female"],
         message: "Gender must be 'Male' or 'Female'",
       },
     },
     age: {
       type: Number,
-      min: [25, "Doctor must be at least 25 years old"],
+      min: [0, "Doctor must be at least 0 years old"],
       max: [80, "Doctor must be at most 80 years old"],
     },
     field: {
-      type: Schema.Types.ObjectId,
+      type: Number,
       ref: "Field",
-      required: [true, "Field is required"],
     },
     patients: [
       {
