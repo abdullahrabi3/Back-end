@@ -1,26 +1,11 @@
 import mongoose from "mongoose";
 const { Schema } = mongoose;
 
-const fieldSchema = new Schema(
-  {
-    name: {
-      type: String,
-      required: [true, "Field name is required"],
-      unique: true,
-      trim: true,
-    },
-    description: {
-      type: String,
-      trim: true,
-    },
-    isActive: {
-      type: Boolean,
-      default: true,
-    },
-  },
-  { timestamps: true }
-);
+const fieldSchema = new mongoose.Schema({
+  name: { type: String, required: true, unique: true },
+  // ... أي حقول أخرى
+});
+mongoose.model("Field", fieldSchema);
 
-const FieldModel = mongoose.model("Field", fieldSchema);
-
-export default FieldModel; 
+const FieldModel = mongoose.model("Field");
+export default FieldModel;

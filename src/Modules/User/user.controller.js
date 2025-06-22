@@ -9,6 +9,7 @@ import { getMyDoctors } from "./user.services.js";
 import { addMeasurement, getMyMeasurements } from "./user.services.js";
 import { receiveLiveMeasurements } from "./measurement.services.js";
 import asyncHandler from "express-async-handler";
+import * as userServices from "./user.services.js";
 
 const router = Router();
 
@@ -45,12 +46,18 @@ router.patch(
   userservices.updatePassword
 );*/
 // src/Modules/User/user.router.js
-
 router.get(
   "/doctors",
   authentication,
-  allowTo("User"), // لو محتاج صلاحيات معينة
-  asyncHandler(getDoctorsForUser)
+  allowTo("User"),
+  asyncHandler(userServices.getDoctorsForUser)
+);
+
+router.post(
+  "/subscribes/:doctorId",
+  authentication,
+  allowTo("User"),
+  asyncHandler(userServices.subscribeToDoctor) // ✅ الأفضل نستخدم asyncHandler هنا
 );
 
 //  اشتراك اليوزر للدكتور

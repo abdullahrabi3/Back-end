@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+
 const { Schema } = mongoose;
 
 const doctorSchema = new Schema(
@@ -35,9 +36,11 @@ const doctorSchema = new Schema(
       max: [80, "Doctor must be at most 80 years old"],
     },
     field: {
-      type: Number,
+      type: mongoose.Schema.Types.ObjectId,
       ref: "Field",
+      required: true,
     },
+
     patients: [
       {
         type: mongoose.Schema.Types.ObjectId,
