@@ -171,7 +171,7 @@ export const getDoctorsForUser = async (req, res, next) => {
       email: doc.email,
       gender: doc.gender,
       age: doc.age,
-      field: doc.field?.number || "Unknown",
+      field: doc.field?.number,
       certificates: doc.certificates || [],
       services: doc.services || [],
       rating: doc.rating,
