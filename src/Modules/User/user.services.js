@@ -158,9 +158,8 @@ export const updatePassword = asyncHandler(async (req, res) => {
 // src/Modules/User/user.services.js
 
 export const getDoctorsForUser = async (req, res, next) => {
-  const doctors = await DoctorModel.find()
-    .select("-password")
-    .populate("field", "name");
+  const doctors = await DoctorModel.find().select("-password");
+  //.populate("field", "name");
 
   return res.status(200).json({
     key: true,
@@ -172,7 +171,7 @@ export const getDoctorsForUser = async (req, res, next) => {
       email: doc.email,
       gender: doc.gender,
       age: doc.age,
-      field: doc.field?.Number || "Unknown",
+      field: doc.field?.number || "Unknown",
       certificates: doc.certificates || [],
       services: doc.services || [],
       rating: doc.rating,

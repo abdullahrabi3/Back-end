@@ -94,18 +94,10 @@ export const registerDoctorSchema = Joi.object({
     "number.max": "Maximum age is 100",
   }),
 
-  field: Joi.string()
-    .custom((value, helpers) => {
-      if (!mongoose.Types.ObjectId.isValid(value)) {
-        return helpers.error("any.invalid");
-      }
-      return value;
-    })
-    .required()
-    .messages({
-      "string.empty": "Field is required",
-      "any.invalid": "Invalid field ID",
-    }),
+  field: Joi.number().required().messages({
+    "number.base": "Field must be a number",
+    "any.required": "Field is required",
+  }),
 });
 
 export const loginDoctorSchema = Joi.object({
