@@ -2,7 +2,7 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import asyncHandler from "express-async-handler";
 import UserModel from "../../DB/models/user.models.js";
-import DoctorModel from "../../DB/models/doctor.models.js";
+import DoctorModel from "./../../DB/models/doctor.models.js";
 import MeasurementModel from "./../../DB/models/measurement.model.js";
 
 export const editprofile = asyncHandler(async (req, res, next) => {
@@ -194,7 +194,19 @@ export const subscribeToDoctor = async (req, res, next) => {
   const doctor = await DoctorModel.findById(doctorId);
   const user = await UserModel.findById(userId);
 
-  if (!doctor || !user) return next(new Error("Doctor or User not found"));
+  if (!doctor || !user) {
+    return next(new Error("Doctor or User not found", { cause: 404 }));
+  }
+
+  // تأكد أن patients مصفوفة
+  if (!Array.isArray(doctor.patients)) {
+    doctor.patients = [];
+  }
+
+  // تأكد أن subscribedDoctors مصفوفة أيضاً
+  if (!Array.isArray(user.subscribedDoctors)) {
+    user.subscribedDoctors = [];
+  }
 
   if (!user.subscribedDoctors.includes(doctorId)) {
     user.subscribedDoctors.push(doctorId);
@@ -203,7 +215,7 @@ export const subscribeToDoctor = async (req, res, next) => {
     await doctor.save();
   }
 
-  res.status(200).json({
+  return res.status(200).json({
     key: true,
     code: 200,
     message: "Subscribed successfully",

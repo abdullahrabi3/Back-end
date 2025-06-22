@@ -27,13 +27,15 @@ const doctorSchema = new Schema(
       type: String,
       enum: {
         values: ["male", "female"],
-        message: "Gender must be 'Male' or 'Female'",
+        message: "Gender must be 'male' or 'female'",
       },
+      required: [true, "Gender is required"],
     },
     age: {
       type: Number,
       min: [0, "Doctor must be at least 0 years old"],
       max: [80, "Doctor must be at most 80 years old"],
+      required: [true, "Age is required"],
     },
     field: {
       type: mongoose.Schema.Types.ObjectId,
@@ -41,18 +43,23 @@ const doctorSchema = new Schema(
       required: true,
     },
 
-    patients: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "User",
-      },
-    ],
-
+    // patients as array with default empty
+    patients: {
+      type: [
+        {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "User",
+        },
+      ],
+      default: [],
+    },
     phone: {
       type: String,
+      trim: true,
     },
     bio: {
       type: String,
+      trim: true,
     },
     certificates: [
       {
@@ -67,12 +74,8 @@ const doctorSchema = new Schema(
     rating: {
       type: Number,
       default: 0,
-      min: 0,
-      max: 5,
-    },
-    patients: {
-      type: Number,
-      default: 0,
+      min: [0, "Rating cannot be negative"],
+      max: [5, "Rating cannot exceed 5"],
     },
     isDeleted: {
       type: Boolean,
@@ -88,6 +91,7 @@ const doctorSchema = new Schema(
     },
     role: {
       type: String,
+      enum: ["doctor", "admin"],
       default: "doctor",
     },
   },
@@ -95,5 +99,4 @@ const doctorSchema = new Schema(
 );
 
 const DoctorModel = mongoose.model("Doctor", doctorSchema);
-
 export default DoctorModel;
