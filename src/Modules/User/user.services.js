@@ -176,6 +176,9 @@ export const getDoctorsForUser = async (req, res, next) => {
       services: doc.services || [],
       rating: doc.rating,
       patients: doc.patients,
+      subscribe:
+        Array.isArray(doc.patients) &&
+        doc.patients.some((p) => p.toString() === userId.toString()),
     })),
   });
 };
