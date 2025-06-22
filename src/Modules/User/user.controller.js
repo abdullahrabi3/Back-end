@@ -8,6 +8,7 @@ import { getDoctorsForUser } from "./user.services.js";
 import { getMyDoctors } from "./user.services.js";
 import { addMeasurement, getMyMeasurements } from "./user.services.js";
 import { receiveLiveMeasurements } from "./measurement.services.js";
+import asyncHandler from "express-async-handler";
 
 const router = Router();
 
@@ -45,7 +46,12 @@ router.patch(
 );*/
 // src/Modules/User/user.router.js
 
-router.get("/doctors", getDoctorsForUser);
+router.get(
+  "/doctors",
+  authentication,
+  allowTo("User"), // لو محتاج صلاحيات معينة
+  asyncHandler(getDoctorsForUser)
+);
 
 //  اشتراك اليوزر للدكتور
 router.post(

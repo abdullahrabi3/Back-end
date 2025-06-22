@@ -158,8 +158,21 @@ export const updatePassword = asyncHandler(async (req, res) => {
 // src/Modules/User/user.services.js
 
 export const getDoctorsForUser = async (req, res, next) => {
+  const userId = req.user._id;
+
+  const fieldMap = {
+    0: "Clinical Nutrition",
+    1: "Public Health Nutrition",
+    2: "Sports and Exercise Nutrition",
+    3: "Functional Nutrition",
+    4: "Pediatric Nutrition",
+    5: "Geriatric Nutrition",
+    6: "Eating Disorders  Nutrition",
+    7: "Personal Training",
+    8: "Strength and Conditioning",
+  };
+
   const doctors = await DoctorModel.find().select("-password");
-  //.populate("field", "name");
 
   return res.status(200).json({
     key: true,
@@ -171,11 +184,12 @@ export const getDoctorsForUser = async (req, res, next) => {
       email: doc.email,
       gender: doc.gender,
       age: doc.age,
-      field: doc.field?.number,
+      field: fieldMap[doc.field] || "Unknown", // ترجم الرقم لاسم
+      fieldNumber: doc.field, // ده الرقم نفسه لو حابب تبعته كمان
       certificates: doc.certificates || [],
       services: doc.services || [],
       rating: doc.rating,
-      patients: doc.patients,
+      patients: doc.patients?.length || 0,
       subscribe:
         Array.isArray(doc.patients) &&
         doc.patients.some((p) => p.toString() === userId.toString()),
