@@ -7,6 +7,7 @@ import { validation } from "../../middlewares/validation.middlware.js";
 import { getDoctorsForUser } from "./user.services.js";
 import { getMyDoctors } from "./user.services.js";
 import { addMeasurement, getMyMeasurements } from "./user.services.js";
+import { receiveLiveMeasurements } from "./measurement.services.js";
 
 const router = Router();
 
@@ -78,6 +79,14 @@ router.get(
   authentication,
   allowTo("User"),
   getMyMeasurements
+);
+
+// جلب قياسات المستخدم
+router.post(
+  "/live-measurement",
+  authentication,
+  allowTo("User"),
+  receiveLiveMeasurements
 );
 
 export default router;
