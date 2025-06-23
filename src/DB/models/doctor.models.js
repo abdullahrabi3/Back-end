@@ -38,21 +38,16 @@ const doctorSchema = new Schema(
       required: [true, "Age is required"],
     },
     field: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Field",
+      type: Number,
       required: true,
     },
 
     // patients as array with default empty
     patients: {
-      type: [
-        {
-          type: mongoose.Schema.Types.ObjectId,
-          ref: "User",
-        },
-      ],
+      type: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
       default: [],
     },
+
     phone: {
       type: String,
       trim: true,

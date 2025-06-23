@@ -230,17 +230,38 @@ export const unsubscribeFromDoctor = async (req, res, next) => {
   const doctor = await DoctorModel.findById(doctorId);
   const user = await UserModel.findById(userId);
 
-  if (!doctor || !user) return next(new Error("Doctor or User not found"));
+  if (!doctor || !user) {
+    return next(new Error("Doctor or User not found", { cause: 404 }));
+  }
+
+  // تأكيد المصفوفات
+  if (!Array.isArray(user.subscribedDoctors)) user.subscribedDoctors = [];
+  if (!Array.isArray(doctor.patients)) doctor.patients = [];
+
+  const wasSubscribed = user.subscribedDoctors.some(
+    (id) => id.toString() === doctorId.toString()
+  );
+
+  if (!wasSubscribed) {
+    return res.status(400).json({
+      key: false,
+      code: 400,
+      message: "User is not subscribed to this doctor",
+    });
+  }
 
   user.subscribedDoctors = user.subscribedDoctors.filter(
-    (id) => id.toString() !== doctorId
+    (id) => id.toString() !== doctorId.toString()
   );
-  doctor.patients = doctor.patients.filter((id) => id.toString() !== userId);
+
+  doctor.patients = doctor.patients.filter(
+    (id) => id.toString() !== userId.toString()
+  );
 
   await user.save();
   await doctor.save();
 
-  res.status(200).json({
+  return res.status(200).json({
     key: true,
     code: 200,
     message: "Unsubscribed successfully",
