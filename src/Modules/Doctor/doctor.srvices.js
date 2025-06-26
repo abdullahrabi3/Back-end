@@ -17,8 +17,10 @@ export const getSubscribedUsers = async (req, res, next) => {
     key: true,
     code: 200,
     message: "Subscribed users fetched",
-    totalUsers,
-    subscribedUsers: subscribedCount,
-    patients: doctor.patients, // تفاصيل المرضى المشتركين
+    date: {
+      totalUsers,
+      subscribedUsers: subscribedCount,
+      patients: doctor.patients,
+    }, // تفاصيل المرضى المشتركين
   });
 };

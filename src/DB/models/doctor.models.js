@@ -86,7 +86,7 @@ const doctorSchema = new Schema(
     },
     role: {
       type: String,
-      enum: ["doctor", "admin"],
+      enum: ["doctor"],
       default: "doctor",
     },
   },

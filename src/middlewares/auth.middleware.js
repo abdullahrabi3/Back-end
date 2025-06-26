@@ -1,44 +1,36 @@
 import jwt from "jsonwebtoken";
 import Usermodel from "../DB/models/user.models.js";
-import DoctorModel from "../DB/models/doctor.models.js"; // تأكد من المسار الصحيح
+import DoctorModel from "../DB/models/doctor.models.js";
 
 export const rolesTypes = {
   User: "User",
   Admin: "Admin",
-  doctor: "doctor",
+  Doctor: "Doctor",
 };
 
 // ✅ Authentication Middleware
 export const authentication = async (req, res, next) => {
-  try {
-    const { authorization } = req.headers;
+  const { authorization } = req.headers;
 
-    if (!authorization) {
-      return next(
-        new Error("authorization header is required", { cause: 401 })
-      );
+  if (!authorization || !authorization.startsWith("Bearer ")) {
+    return next(new Error("Authorization header is required", { cause: 401 }));
+  }
+
+  const token = authorization.split(" ")[1];
+
+  try {
+    const decoded = jwt.verify(token, process.env.TOKEN_SECRET); // توكن موحد
+    const { id, role } = decoded;
+
+    if (!id || !role) {
+      return next(new Error("Invalid token payload", { cause: 400 }));
     }
 
-    const [Bearer, token] = authorization.split(" ");
-
-    let TOKEN_SIGNATURE;
-    let user = null;
-
-    switch (Bearer) {
-      case "Bearer":
-        TOKEN_SIGNATURE = process.env.TOKEN_SECRIT_USER;
-        user = await getUserFromToken(token, TOKEN_SIGNATURE, Usermodel);
-        break;
-      case "Admin":
-        TOKEN_SIGNATURE = process.env.TOKEN_SECRIT_ADMIN;
-        user = await getUserFromToken(token, TOKEN_SIGNATURE, Usermodel);
-        break;
-      case "Doctor":
-        TOKEN_SIGNATURE = process.env.TOKEN_SECRIT_DOCTOR;
-        user = await getUserFromToken(token, TOKEN_SIGNATURE, DoctorModel);
-        break;
-      default:
-        return next(new Error("Invalid token type", { cause: 400 }));
+    let user;
+    if (role === "Doctor") {
+      user = await DoctorModel.findById(id);
+    } else {
+      user = await Usermodel.findById(id); // يشمل User و Admin
     }
 
     if (!user) {
@@ -46,30 +38,19 @@ export const authentication = async (req, res, next) => {
     }
 
     req.user = user;
+    req.user.role = role; // مهم جدًا عشان نستخدمه في allowTo
     next();
   } catch (error) {
-    return next(error);
+    return next(new Error("Invalid or expired token", { cause: 401 }));
   }
 };
 
 // ✅ Authorization Middleware
 export const allowTo = (roles = []) => {
   return (req, res, next) => {
-    try {
-      if (!roles.includes(req.user.role)) {
-        return next(new Error("You are not allowed", { cause: 403 }));
-      }
-      next();
-    } catch (error) {
-      return next(error);
+    if (!roles.includes(req.user.role)) {
+      return next(new Error("You are not allowed", { cause: 403 }));
     }
+    next();
   };
 };
-
-// ✅ Helper to decode and find user
-const getUserFromToken = async (token, secret, model) => {
-  const decoded = jwt.verify(token, secret);
-  return await model.findById(decoded.id);
-};
-
-export default { authentication, allowTo };

@@ -29,8 +29,8 @@ export const register = async (req, res, next) => {
 
   // Generate token
   const token = jwt.sign(
-    { id: user._id },
-    process.env.TOKEN_SECRIT_USER, // تأكد إنه متعريف في .env
+    { id: user._id, role: "User" }, // أو Doctor أو Admin حسب الحالة
+    process.env.TOKEN_SECRET,
     { expiresIn: "7d" }
   );
 
@@ -77,11 +77,9 @@ export const login = async (req, res, next) => {
 
   // Generate token based on role
   const token = jwt.sign(
-    { id: user._id, isloggedIn: true },
-    user.role === rolesTypes.User
-      ? process.env.TOKEN_SECRIT_USER
-      : process.env.TOKEN_SECRIT_ADMIN,
-    { expiresIn: "1h" }
+    { id: user._id, role: "User" }, // أو Doctor أو Admin حسب الحالة
+    process.env.TOKEN_SECRET,
+    { expiresIn: "7d" }
   );
 
   return res.status(200).json({

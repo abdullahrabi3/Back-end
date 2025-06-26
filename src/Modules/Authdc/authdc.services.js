@@ -22,9 +22,11 @@ export const registerdc = async (req, res, next) => {
     field,
   });
 
-  const token = jwt.sign({ id: doctor._id }, process.env.TOKEN_SECRIT_DOCTOR, {
-    expiresIn: "7d",
-  });
+  const token = jwt.sign(
+    { id: user._id, role: "Doctor" }, // أو Doctor أو Admin حسب الحالة
+    process.env.TOKEN_SECRET,
+    { expiresIn: "7d" }
+  );
 
   return res.status(201).json({
     key: true,
@@ -55,8 +57,8 @@ export const logindc = async (req, res, next) => {
       .json({ key: false, code: 400, message: "Incorrect password" });
 
   const token = jwt.sign(
-    { id: doctor._id, isloggedIn: true },
-    process.env.TOKEN_SECRIT_DOCTOR,
+    { id: doctor._id, isloggedIn: true, role: "Doctor" }, // أضفنا role
+    process.env.TOKEN_SECRET, // استخدمنا التوكن الموحد
     { expiresIn: "7d" }
   );
 
